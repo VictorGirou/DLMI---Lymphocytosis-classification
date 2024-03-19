@@ -26,15 +26,16 @@ class ConvAE(nn.Module):
 
         # encoder part
 
-        self.conv1 = nn.Conv2d(in_channels=n_channels, out_channels=3, kernel_size=9, stride=2)
-        self.conv2 = nn.Conv2d(in_channels=3, out_channels=1, kernel_size=9, stride=1)
+        self.conv1 = nn.Conv2d(in_channels=n_channels, out_channels=32, kernel_size=4, stride=(2, 2))
+        self.conv2 = nn.Conv2d(in_channels=32, out_channels=3, kernel_size=2, stride=(2, 2))
 
         # decoder part
 
-        self.transconv1 = nn.ConvTranspose2d(1, 3, kernel_size=9,stride=2)
-        self.transconv2 = nn.ConvTranspose2d(3, 3, kernel_size=9, stride=2)
+        self.transconv1 = nn.ConvTranspose2d(3, 32, kernel_size=2,stride=(2, 2))
+        self.transconv2 = nn.ConvTranspose2d(32, 3, kernel_size=4, stride=(2, 2), padding=1)
 
         self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
 
         self.criterion = nn.MSELoss()
 
@@ -46,7 +47,7 @@ class ConvAE(nn.Module):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.conv2(x)
-        return x
+        return self.sigmoid(x)
 
     def decoder(self, z):
 
@@ -54,7 +55,7 @@ class ConvAE(nn.Module):
         z = self.relu(z)
         z = self.transconv2(z)
         
-        z = nn.AdaptiveAvgPool2d(output_size=(224, 224))(z)
+        z = self.sigmoid(z)
 
         return z
 
