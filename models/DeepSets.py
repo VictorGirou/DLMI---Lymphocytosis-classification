@@ -31,19 +31,20 @@ class DeepSets(nn.Module):
         
         # Shared layers
         self.shared_layers = nn.Sequential(
-            nn.Linear(input_dim, 64),  
-            nn.Dropout(0.5),
+            nn.Linear(input_dim, 128),  
             nn.ReLU(),
-            nn.Linear(64, 16),
-            nn.ReLU()
+            nn.Linear(128, 32),
+            nn.ReLU(),
+            # nn.Linear(64, 32),
+            # nn.ReLU()
         )
         
         # Permutation-invariant layer
         self.invariant_layer = nn.Sequential(
             # nn.Linear(hidden_dim, hidden_dim),
             # nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(16*3, output_dim), 
+            #nn.Dropout(0.5),
+            nn.Linear(32, output_dim), 
             nn.Sigmoid()
         )
 
@@ -56,10 +57,11 @@ class DeepSets(nn.Module):
         
         # Aggregate features across elements (sum or mean)
         mean = torch.mean(output, dim=1)  # Permutation-invariant aggregation
-        std = torch.std(output, dim=1)
-        max_, _ = torch.max(output, dim=1)
+        # std = torch.std(output, dim=1)
+        # max_, _ = torch.max(output, dim=1)
         
-        y = torch.concat([mean, std, max_], dim=1)
+        # y = torch.concat([mean, std, max_], dim=1)
+        y = mean
         
         # Apply permutation-invariant layer
         y = self.invariant_layer(y)
