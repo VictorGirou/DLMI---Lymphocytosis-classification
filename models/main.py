@@ -25,7 +25,7 @@ def main():
     df_test = df_test.join(df_ann.LABEL, on="ID", how="left")
 
     # scaling 
-    col = [str(i) for i in range(2048)]
+    """col = [str(i) for i in range(2048)]
     scaler = MinMaxScaler()
     df_scaled = pd.DataFrame(scaler.fit_transform(df[col]), columns=col)
     df_test_scaled = pd.DataFrame(scaler.transform(df_test[col]), columns=col)
@@ -33,19 +33,19 @@ def main():
     df_scaled["ID"] = df.ID
     df_scaled["LABEL"] = df.LABEL
     df_test_scaled["ID"] = df_test.ID
-    df_test_scaled["LABEL"] = df_test.LABEL
+    df_test_scaled["LABEL"] = df_test.LABEL"""
 
     # print(df_scaled.isna().sum())
 
     # construct data loader
-    loader = deepsets_loader(df_scaled)
-    test_loader = deepsets_loader(df_test_scaled)
+    loader = deepsets_loader(df)
+    test_loader = deepsets_loader(df_test)
 
     # define model 
     model = DeepSets(2048, 32, 1)
 
     criterion = torch.nn.BCELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
     # Assuming custom_dataset and custom_dataloader are defined as in the previous example
 
