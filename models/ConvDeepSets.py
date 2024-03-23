@@ -32,7 +32,7 @@ class PatientDataset(Dataset):
         label = self.labels[self.patients[idx]]
         label_tensor = torch.tensor([label], dtype=torch.float32)
     
-        return torch.stack(images), label_tensor
+        return torch.stack(images), label_tensor, self.patients[idx]
     
 
 class SetEncoder(nn.Module):
